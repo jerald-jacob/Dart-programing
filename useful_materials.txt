@@ -1,3 +1,4 @@
 https://codelabs.developers.google.com/codelabs/flutter/#0
 https://material.io/design/layout/responsive-layout-grid.html#grid-customization
 https://www.youtube.com/watch?v=qWL1lGchpRA&list=PLR2qQy0Zxs_UdqAcaipPR3CG1Ly57UlhV (youtube videos)
+MVP (Model-View-Presenter)
