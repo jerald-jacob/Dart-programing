@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 main() {
   runApp(MaterialApp(
-    home: Page2(),
+    home: Page1(),
   ));
 }
 
