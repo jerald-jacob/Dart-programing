@@ -7,7 +7,7 @@ void main() {
         backgroundColor: Colors.blueGrey,
         appBar: AppBar(
           backgroundColor: Colors.white12,
-          title: Center(child: Text("Welcom")),
+          title: Center(child: Text("Welcome")),
         ),
         body: Center(
           child: Image(
