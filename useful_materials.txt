@@ -3,3 +3,4 @@ https://material.io/design/layout/responsive-layout-grid.html#grid-customization
 https://www.youtube.com/watch?v=qWL1lGchpRA&list=PLR2qQy0Zxs_UdqAcaipPR3CG1Ly57UlhV (youtube videos)
 MVP (Model-View-Presenter)
 (Transition)https://medium.com/flutter-community/everything-you-need-to-know-about-flutter-page-route-transition-9ef5c1b32823
+http://flutterdevs.com/blog/using-sharedpreferences-in-flutter/ (SharedPreferences)
