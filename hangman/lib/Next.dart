@@ -794,9 +794,14 @@ class _SecondPageState extends State<SecondPage> {
   String _name = '';
   String _userInput = '';
   Set _guessedCharacters = new Set();
+  Set _wrongGuessCharacters = new Set();
   String _temp = 'images/hangman/1.png';
-  var _i = 0;
+
+  static int _wrongGuess = 0;
+  var resultList = new List<String>();
   String _word = 'APPLE';
+  var _filler = '-';
+
   VideoPlayerController _controller;
 
   final myController = TextEditingController();
@@ -805,6 +810,7 @@ class _SecondPageState extends State<SecondPage> {
   void initState() {
     super.initState();
     _loadCounter();
+    _loadBlank();
     _controller = VideoPlayerController.asset('video/gamemusic.mp4')
 
 //    VideoPlayerController.network(
@@ -885,30 +891,40 @@ class _SecondPageState extends State<SecondPage> {
 
                     Padding(
 ////Add padding around textfield
-                      padding: EdgeInsets.symmetric(horizontal: 25.0),
-                      child: TextField(
-                        textCapitalization: TextCapitalization.characters,
-                        controller: myController,
-                        cursorColor: Colors.white,
-                        style: TextStyle(
-                          fontSize: 30,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        decoration: InputDecoration(
-//Add th Hint text here.
-
-                          hintText: "Enter your word",
-                          hintStyle: TextStyle(
-                              fontSize: 20.0,
-                              color: Colors.white,
-                              fontWeight: FontWeight.w300),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10.0),
+                        padding: EdgeInsets.symmetric(horizontal: 25.0),
+                        child: Text(
+                          " " + resultList.toString(),
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontFamily: 'Caesar_Dressing',
+                            color: Colors.white,
+                            fontWeight: FontWeight.w300,
                           ),
+                        )
+
+//                      TextField(
+//                        textCapitalization: TextCapitalization.characters,
+//                        controller: myController,
+//                        cursorColor: Colors.white,
+//                        style: TextStyle(
+//                          fontSize: 30,
+//                          color: Colors.white,
+//                          fontWeight: FontWeight.bold,
+//                        ),
+//                        decoration: InputDecoration(
+////Add th Hint text here.
+//
+//                          hintText: "Enter your word",
+//                          hintStyle: TextStyle(
+//                              fontSize: 20.0,
+//                              color: Colors.white,
+//                              fontWeight: FontWeight.w300),
+//                          border: OutlineInputBorder(
+//                            borderRadius: BorderRadius.circular(10.0),
+//                          ),
+//                        ),
+//                      ),
                         ),
-                      ),
-                    ),
 
                     SizedBox(
                       height: 30,
@@ -1494,7 +1510,11 @@ class _SecondPageState extends State<SecondPage> {
               ),
               Container(
                 child: Text(
-                  "THE WORD YOU ENTERD IS " + _temp,
+                  "THE WORD YOU ENTERD IS " +
+                      _temp +
+                      " " +
+                      _wrongGuessCharacters.toString(),
+                  //_guessedCharacters.toString(),
                   style: TextStyle(
                     fontSize: 20,
                     fontFamily: 'Caesar_Dressing',
@@ -1511,11 +1531,35 @@ class _SecondPageState extends State<SecondPage> {
   }
 
   void _guess(c) {
-    var _i = 1;
-    if (_i < 2) {
-      _guessedCharacters.add(c);
-      _temp = _guessedCharacters.elementAt(0);
-      _i++;
+    var _wordLength = _word.length;
+
+    for (int i = 0; i < _wordLength; i++) {
+      if (_word[i] == c) {
+        _guessedCharacters.add(c);
+        resultList[i] = c;
+      } else {
+        _wrongGuessCharacters.add(c);
+        _hangmanImage();
+
+//          if (_wrongGuess > 11) {
+//            _temp = 'images/hangman/11.png';
+//          } else {
+//
+//          }
+      }
+    }
+
+    // _temp = _guessedCharacters.elementAt(0);
+  }
+
+  void _hangmanImage() {
+    _wrongGuess += 1;
+    _temp = 'images/hangman/$_wrongGuess.png';
+  }
+
+  void _loadBlank() {
+    for (int i = 0; i < _word.length; i++) {
+      this.resultList.add(_filler);
     }
   }
 
@@ -1525,20 +1569,6 @@ class _SecondPageState extends State<SecondPage> {
       _userInput = myController.text;
     });
     prefs.setString('userInput', _userInput);
-//    for (int i = 0; i <= _word.length; i++) {
-//      _word_name[i] = _word;
-//    }
-
-    if (_word == _userInput) {
-      _temp = _userInput;
-    } else {
-      _i = _i + 1;
-      if (_i > 11) {
-        _temp = 'images/hangman/11.png';
-      } else {
-        _temp = 'images/hangman/$_i.png';
-      }
-    }
   }
 
   _loadWordCount() async {
