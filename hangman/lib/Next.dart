@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:hangman/main.dart';
+import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:video_player/video_player.dart';
 
@@ -801,7 +804,8 @@ class _SecondPageState extends State<SecondPage> {
   Set _wrongGuessCharacters = new Set();
   var _hanganImage = new List<String>();
   String _temp = 'images/hangman/1.png';
-
+  final String url = "https://www.randomlists.com/data/vocabulary-words.json";
+  List data;
   var _wrongGuess = true;
   var completed = true;
   var _wrongGuessNumber = 0;
@@ -819,6 +823,7 @@ class _SecondPageState extends State<SecondPage> {
     super.initState();
     _loadCounter();
     _loadBlank();
+    this.getJsonData();
     _controller = VideoPlayerController.asset('video/gamemusic.mp4')
 
 //    VideoPlayerController.network(
@@ -844,6 +849,20 @@ class _SecondPageState extends State<SecondPage> {
       _name = myController.text;
     });
     prefs.setString('name', _name);
+  }
+
+  Future<String> getJsonData() async {
+    var response = await http
+        .get(Uri.encodeFull(url), headers: {"Accept": "application/json"});
+
+    print(response.body);
+
+    setState(() {
+      var toJsonData = json.decode(response.body);
+      data = toJsonData['data'];
+    });
+
+    return "Success";
   }
 
   Widget build(BuildContext context) {
@@ -1516,21 +1535,19 @@ class _SecondPageState extends State<SecondPage> {
                   ],
                 ),
               ),
-              Container(
-                child: Text(
-                  "THE WORD YOU ENTERD IS " +
-                      _temp +
-                      " " +
-                      _wrongGuessCharacters.toString(),
-                  //_guessedCharacters.toString(),
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontFamily: 'Caesar_Dressing',
-                    color: Colors.white,
-                    fontWeight: FontWeight.w300,
-                  ),
-                ),
-              ),
+//              Container(
+//                child: Text(
+//                  "THE WORD YOU ENTERD IS " + _temp + " ",
+//                  //   _wrongGuessCharacters.toString(),
+//                  //_guessedCharacters.toString(),
+//                  style: TextStyle(
+//                    fontSize: 20,
+//                    fontFamily: 'Caesar_Dressing',
+//                    color: Colors.white,
+//                    fontWeight: FontWeight.w300,
+//                  ),
+//                ),
+//              ),
             ],
           ),
         ),
@@ -1575,6 +1592,8 @@ class _SecondPageState extends State<SecondPage> {
 
     if (_resultString == _word) {
       this._temp = 'images/hangman/win.jpg';
+
+      _winTheGame();
     } else if (_wrongGuessCharacters.length == 2) {
       this._temp = 'images/hangman/7.png';
     } else if (_wrongGuessCharacters.length == 3) {
@@ -1585,6 +1604,7 @@ class _SecondPageState extends State<SecondPage> {
       this._temp = 'images/hangman/10.png';
     } else if (_wrongGuessCharacters.length == 6) {
       this._temp = 'images/hangman/11.png';
+      _lossTheGame();
     }
   }
 
@@ -1602,6 +1622,104 @@ class _SecondPageState extends State<SecondPage> {
       _userInput = myController.text;
     });
     prefs.setString('userInput', _userInput);
+  }
+
+//  void _winTheGame()
+//    {
+//      Navigator.push(
+//          context, new MaterialPageRoute(builder: (context) => new Page2()));
+//    }
+
+  Future<void> _winTheGame() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.greenAccent,
+          title: Text(
+            'WELL DONE',
+            style: TextStyle(
+              fontSize: 40,
+              fontFamily: 'Caesar_Dressing',
+              color: Colors.black,
+              fontWeight: FontWeight.w100,
+            ),
+          ),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('would you give me another   chance'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+                child: Text(
+                  '>',
+                  style: TextStyle(
+                    fontSize: 50,
+                    fontFamily: 'Caesar_Dressing',
+                    color: Colors.black,
+                    fontWeight: FontWeight.w100,
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      new MaterialPageRoute(
+                          builder: (context) => new SecondPage()));
+                }),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _lossTheGame() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.greenAccent,
+          title: Text(
+            'OOPS YOU FAILED',
+            style: TextStyle(
+              fontSize: 40,
+              fontFamily: 'Caesar_Dressing',
+              color: Colors.black,
+              fontWeight: FontWeight.w100,
+            ),
+          ),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('would you give me one more chance'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+                child: Text(
+                  '>',
+                  style: TextStyle(
+                    fontSize: 50,
+                    fontFamily: 'Caesar_Dressing',
+                    color: Colors.black,
+                    fontWeight: FontWeight.w100,
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      new MaterialPageRoute(
+                          builder: (context) => new SecondPage()));
+                }),
+          ],
+        );
+      },
+    );
   }
 }
 

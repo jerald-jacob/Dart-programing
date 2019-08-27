@@ -296,7 +296,7 @@ class MainPage extends StatelessWidget {
 
 Route _createRoute() {
   return PageRouteBuilder(
-    pageBuilder: (context, animation, secondaryAnimation) => FirstPage(),
+    pageBuilder: (context, animation, secondaryAnimation) => SecondPage(),
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       return child;
     },

@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
-  //MyApp({Key key, this.quote}) : super(key: key);
+  MyApp({Key key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -51,8 +51,7 @@ class MyApp extends StatelessWidget {
   }
 
   Future<Quote> getQuote() async {
-    String url =
-        'http://api.wordnik.com/v4/words.json/randomWord?api_key=6z3v0sqalah3e85ar9kujn2qrv4eytwlckiuk8l6zptgktmv8';
+    String url = 'https://www.randomlists.com/data/vocabulary-words.json';
     final response =
         await http.get(url, headers: {"Accept": "application/json"});
 
@@ -65,12 +64,35 @@ class MyApp extends StatelessWidget {
 }
 
 class Quote {
-  final int author;
+  final String author;
   final String quote;
 
   Quote({this.author, this.quote});
 
   factory Quote.fromJson(Map<String, dynamic> json) {
-    return Quote(author: json['id'], quote: json['word']);
+    return Quote(
+        author: json['data'][0]['name'], quote: json['data'][1]['name']);
+  }
+}
+
+class ApiPage extends StatefulWidget {
+  @override
+  ApiPageState createState() => new ApiPageState();
+}
+
+class ApiPageState extends State<ApiPage> {
+  @override
+  Future<String> getData() async {
+    http.Response response = await http.get(
+        Uri.encodeFull(
+            "https://www.randomlists.com/data/vocabulary-words.json"),
+        headers: {"Accept": "applications/json"});
+    List data = json.decode(response.body);
+    print(data[1]["name"]);
+  }
+
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return null;
   }
 }
