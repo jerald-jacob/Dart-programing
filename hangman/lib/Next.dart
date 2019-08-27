@@ -3,6 +3,8 @@ import 'package:hangman/main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:video_player/video_player.dart';
 
+import 'NextPage.dart';
+
 String _email = '';
 
 class Next extends StatefulWidget {
@@ -556,30 +558,32 @@ class _FirstPageState extends State<FirstPage> {
                                     Navigator.push(
                                         context,
                                         new MaterialPageRoute(
-                                            builder: (context) => new Page2()));
+                                            builder: (context) =>
+                                                new NextPage()));
                                   }),
                             ),
                             Expanded(
                               child: new MaterialButton(
-                                  padding: const EdgeInsets.all(3.0),
-                                  // textColor: Colors.re,
-                                  color: Color.fromRGBO(34, 80, 41, 89),
-                                  child: new Text(
-                                    "HARD",
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      fontFamily: 'Caesar_Dressing',
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w300,
-                                    ),
+                                padding: const EdgeInsets.all(3.0),
+                                // textColor: Colors.re,
+                                color: Color.fromRGBO(34, 80, 41, 89),
+                                child: new Text(
+                                  "HARD",
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontFamily: 'Caesar_Dressing',
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w300,
                                   ),
-                                  onPressed: () {
-                                    _incrementCounter();
-                                    Navigator.push(
-                                        context,
-                                        new MaterialPageRoute(
-                                            builder: (context) => new Page2()));
-                                  }),
+                                ),
+//                                  onPressed: () {
+//                                    _incrementCounter();
+//                                    Navigator.push(
+//                                        context,
+//                                        new MaterialPageRoute(
+//                                            builder: (context) => new Page2()));
+//                                  }
+                              ),
                             )
                           ]),
                       Row(
@@ -795,9 +799,13 @@ class _SecondPageState extends State<SecondPage> {
   String _userInput = '';
   Set _guessedCharacters = new Set();
   Set _wrongGuessCharacters = new Set();
+  var _hanganImage = new List<String>();
   String _temp = 'images/hangman/1.png';
 
-  static int _wrongGuess = 0;
+  var _wrongGuess = true;
+  var completed = true;
+  var _wrongGuessNumber = 0;
+
   var resultList = new List<String>();
   String _word = 'APPLE';
   var _filler = '-';
@@ -1522,7 +1530,7 @@ class _SecondPageState extends State<SecondPage> {
                     fontWeight: FontWeight.w300,
                   ),
                 ),
-              )
+              ),
             ],
           ),
         ),
@@ -1531,31 +1539,56 @@ class _SecondPageState extends State<SecondPage> {
   }
 
   void _guess(c) {
-    var _wordLength = _word.length;
-
-    for (int i = 0; i < _wordLength; i++) {
+    for (int i = 0; i < _word.length; i++) {
+      var _tempWord = _word[i];
       if (_word[i] == c) {
         _guessedCharacters.add(c);
+        _wrongGuess = false;
         resultList[i] = c;
-      } else {
-        _wrongGuessCharacters.add(c);
-        _hangmanImage();
+        _wrongGuessCharacters.remove(c);
 
-//          if (_wrongGuess > 11) {
-//            _temp = 'images/hangman/11.png';
-//          } else {
-//
-//          }
+//        _hangmanImage();
+      } else {
+        if (_wrongGuessCharacters.contains(_tempWord)) {
+          _wrongGuessCharacters.remove(_tempWord);
+        } else {
+          _wrongGuessCharacters.add(c);
+        }
+
+        completed = false;
+        // _hangmanImage();
       }
+//      if (resultList[i] == _wrongGuessCharacters.elementAt(i)) {
+//        _wrongGuessCharacters.remove(c);
+//      }
+      if (_wrongGuessCharacters.contains(_tempWord)) {
+        _wrongGuessCharacters.remove(_tempWord);
+      } else {}
+      _hangmanImage();
     }
 
     // _temp = _guessedCharacters.elementAt(0);
   }
 
   void _hangmanImage() {
-    _wrongGuess += 1;
-    _temp = 'images/hangman/$_wrongGuess.png';
+    var _resultString = resultList.join("");
+
+    if (_resultString == _word) {
+      this._temp = 'images/hangman/win.jpg';
+    } else if (_wrongGuessCharacters.length == 2) {
+      this._temp = 'images/hangman/7.png';
+    } else if (_wrongGuessCharacters.length == 3) {
+      this._temp = 'images/hangman/8.png';
+    } else if (_wrongGuessCharacters.length == 4) {
+      this._temp = 'images/hangman/9.png';
+    } else if (_wrongGuessCharacters.length == 5) {
+      this._temp = 'images/hangman/10.png';
+    } else if (_wrongGuessCharacters.length == 6) {
+      this._temp = 'images/hangman/11.png';
+    }
   }
+
+  void _disp() {}
 
   void _loadBlank() {
     for (int i = 0; i < _word.length; i++) {
@@ -1569,13 +1602,6 @@ class _SecondPageState extends State<SecondPage> {
       _userInput = myController.text;
     });
     prefs.setString('userInput', _userInput);
-  }
-
-  _loadWordCount() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _userInput = (prefs.getString('userInput') ?? '');
-    });
   }
 }
 
@@ -1730,758 +1756,7 @@ class Page1 extends StatelessWidget {
   }
 }
 
-class Page2 extends StatefulWidget {
-  TextEditingController _textFieldController = TextEditingController();
-  @override
-  _Page2State createState() => _Page2State();
-}
-
-class _Page2State extends State<Page2> {
-  String _name = '';
-  @override
-  void initState() {
-    super.initState();
-    _loadCounter();
-  }
-
-  _loadCounter() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _name = (prefs.getString('name') ?? '');
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-          backgroundColor: Color.fromRGBO(234, 182, 111, 88),
-          body: SafeArea(
-//            child: Column(
-//          mainAxisAlignment: MainAxisAlignment.center,
-//          children: <Widget>[
-//            Image.asset('images/maingif.gif'),
-//            Text('HANGMAN',
-//                style: TextStyle(
-//                    fontFamily: 'Pacifico',
-//                    color: Colors.teal.shade50,
-//                    fontSize: 40,
-//                    fontWeight: FontWeight.bold)),
-//            MaterialButton(
-//                child: Text(
-//                  'PLAY',
-//                  style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
-//                ),
-//                textTheme: ButtonTextTheme.accent,
-//                color: Colors.orange,
-//                onPressed: () {
-//                  Navigator.of(context).push(_createRoute());
-//                }),
-//            Card(
-//              margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
-//              color: Colors.white,
-//              child: Padding(
-//                padding: EdgeInsets.all(15),
-//                child: Row(
-//                  children: <Widget>[
-//                    Icon(
-//                      Icons.email,
-//                      color: Colors.teal,
-//                    ),
-//                    SizedBox(width: 15.0),
-//                    Text(
-//                      'Jeraldjacob10@gmail.com',
-//                      style: TextStyle(
-//                          fontSize: 20.0,
-//                          fontFamily: 'Source Sans Pro',
-//                          color: Colors.teal),
-//                    )
-//                  ],
-//                ),
-//              ),
-//            )
-//          ],
-//        ),
-              child: ListView(children: <Widget>[
-            Container(
-              height: 50,
-              color: Color.fromRGBO(234, 182, 111, 0),
-              margin: EdgeInsets.all(8.0),
-              child: Image.asset(
-                'images/Hangman-Logo.png',
-                width: 295,
-                height: 280,
-              ),
-            ),
-            Container(
-              height: 300,
-              color: Color.fromRGBO(34, 80, 41, 55),
-              child: ListView(
-                children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                      Image.asset(
-                        'images/hangman/two.png',
-                        fit: BoxFit.fill,
-                        width: 200,
-                        height: 200,
-                      ),
-                      Column(
-                        children: <Widget>[
-                          new Text(
-                            " " + _name,
-                            style: TextStyle(
-                              fontSize: 30,
-                              fontFamily: 'Lato',
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          new Text(
-                            "___________",
-                            style: TextStyle(
-                              fontSize: 30,
-                              fontFamily: 'Lato',
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          new Text(
-                            "0",
-                            style: TextStyle(
-                              fontSize: 30,
-                              fontFamily: 'Lato',
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      )
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      new Text(
-                        "--------",
-                        style: TextStyle(
-                          fontSize: 30,
-                          fontFamily: 'Lato',
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ]))),
-    );
-  }
-}
-
-class Page3 extends StatelessWidget {
-  TextEditingController _textFieldController = TextEditingController();
-
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: Scaffold(
-        backgroundColor: Color.fromRGBO(81, 23, 19, 5),
-        body: SafeArea(
-//            child: Column(
-//          mainAxisAlignment: MainAxisAlignment.center,
-//          children: <Widget>[
-//            Image.asset('images/maingif.gif'),
-//            Text('HANGMAN',
-//                style: TextStyle(
-//                    fontFamily: 'Pacifico',
-//                    color: Colors.teal.shade50,
-//                    fontSize: 40,
-//                    fontWeight: FontWeight.bold)),
-//            MaterialButton(
-//                child: Text(
-//                  'PLAY',
-//                  style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
-//                ),
-//                textTheme: ButtonTextTheme.accent,
-//                color: Colors.orange,
-//                onPressed: () {
-//                  Navigator.of(context).push(_createRoute());
-//                }),
-//            Card(
-//              margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
-//              color: Colors.white,
-//              child: Padding(
-//                padding: EdgeInsets.all(15),
-//                child: Row(
-//                  children: <Widget>[
-//                    Icon(
-//                      Icons.email,
-//                      color: Colors.teal,
-//                    ),
-//                    SizedBox(width: 15.0),
-//                    Text(
-//                      'Jeraldjacob10@gmail.com',
-//                      style: TextStyle(
-//                          fontSize: 20.0,
-//                          fontFamily: 'Source Sans Pro',
-//                          color: Colors.teal),
-//                    )
-//                  ],
-//                ),
-//              ),
-//            )
-//          ],
-//        ),
-          child: ListView(
-            children: <Widget>[
-              // Max Size
-//              Container(
-//                  height: 100,
-//                  color: Color.fromRGBO(90, 58, 29, 10),
-//                  margin: EdgeInsets.all(8.0),
-//                  child: Image.asset(
-//                    'images/maingif.gif',
-//                    width: 300,
-//                    height: 280,
-//                  )),
-              Container(
-                height: 100,
-                color: Color.fromRGBO(90, 58, 29, 10),
-                margin: EdgeInsets.all(8.0),
-                child: Image.asset(
-                  'images/Hangman-Logo.png',
-                  width: 295,
-                  height: 280,
-                ),
-              ),
-
-              Container(
-                  height: 420,
-                  //  color: Color.fromRGBO(76, 118, 45, 10),
-                  margin: EdgeInsets.all(8.0),
-                  child: Column(
-                    children: <Widget>[
-                      Image.asset('images/hangman/three.png'),
-                      SizedBox(
-                        width: 20,
-                        height: 20,
-                      ),
-                      Padding(
-//Add padding around textfield
-                        padding: EdgeInsets.symmetric(horizontal: 25.0),
-                        child: TextField(
-                          cursorColor: Colors.white,
-                          controller: _textFieldController,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w100,
-                          ),
-                          decoration: InputDecoration(
-//Add th Hint text here.
-
-                            hintText: "_ _ _ _ _ _",
-                            hintStyle: TextStyle(
-                                fontSize: 20.0,
-                                color: Colors.white60,
-                                fontWeight: FontWeight.w300),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
-                          ),
-                        ),
-                      ),
-                      new MaterialButton(
-                        padding: const EdgeInsets.all(8.0),
-                        // textColor: Colors.re,
-                        color: Colors.blue,
-
-                        child: new Text(
-                          "Go",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 30),
-                        ),
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              new MaterialPageRoute(
-                                  builder: (context) => new Page4()));
-                        },
-                      ),
-                    ],
-                  )),
-              Container(
-                child: Card(
-                  color: Color.fromRGBO(90, 58, 29, 10),
-                ),
-                height: 40,
-                margin: EdgeInsets.all(8.0),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class Page4 extends StatelessWidget {
-  TextEditingController _textFieldController = TextEditingController();
-
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: Scaffold(
-        backgroundColor: Color.fromRGBO(81, 23, 19, 5),
-        body: SafeArea(
-//            child: Column(
-//          mainAxisAlignment: MainAxisAlignment.center,
-//          children: <Widget>[
-//            Image.asset('images/maingif.gif'),
-//            Text('HANGMAN',
-//                style: TextStyle(
-//                    fontFamily: 'Pacifico',
-//                    color: Colors.teal.shade50,
-//                    fontSize: 40,
-//                    fontWeight: FontWeight.bold)),
-//            MaterialButton(
-//                child: Text(
-//                  'PLAY',
-//                  style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
-//                ),
-//                textTheme: ButtonTextTheme.accent,
-//                color: Colors.orange,
-//                onPressed: () {
-//                  Navigator.of(context).push(_createRoute());
-//                }),
-//            Card(
-//              margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
-//              color: Colors.white,
-//              child: Padding(
-//                padding: EdgeInsets.all(15),
-//                child: Row(
-//                  children: <Widget>[
-//                    Icon(
-//                      Icons.email,
-//                      color: Colors.teal,
-//                    ),
-//                    SizedBox(width: 15.0),
-//                    Text(
-//                      'Jeraldjacob10@gmail.com',
-//                      style: TextStyle(
-//                          fontSize: 20.0,
-//                          fontFamily: 'Source Sans Pro',
-//                          color: Colors.teal),
-//                    )
-//                  ],
-//                ),
-//              ),
-//            )
-//          ],
-//        ),
-          child: ListView(
-            children: <Widget>[
-              // Max Size
-//              Container(
-//                  height: 100,
-//                  color: Color.fromRGBO(90, 58, 29, 10),
-//                  margin: EdgeInsets.all(8.0),
-//                  child: Image.asset(
-//                    'images/maingif.gif',
-//                    width: 300,
-//                    height: 280,
-//                  )),
-              Container(
-                height: 100,
-                color: Color.fromRGBO(90, 58, 29, 10),
-                margin: EdgeInsets.all(8.0),
-                child: Image.asset(
-                  'images/Hangman-Logo.png',
-                  width: 295,
-                  height: 280,
-                ),
-              ),
-
-              Container(
-                  height: 420,
-                  //  color: Color.fromRGBO(76, 118, 45, 10),
-                  margin: EdgeInsets.all(8.0),
-                  child: Column(
-                    children: <Widget>[
-                      Image.asset('images/hangman/four.png'),
-                      SizedBox(
-                        width: 20,
-                        height: 20,
-                      ),
-                      Padding(
-//Add padding around textfield
-                        padding: EdgeInsets.symmetric(horizontal: 25.0),
-                        child: TextField(
-                          cursorColor: Colors.white,
-                          controller: _textFieldController,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w100,
-                          ),
-                          decoration: InputDecoration(
-//Add th Hint text here.
-
-                            hintText: "_ _ _ _ _",
-                            hintStyle: TextStyle(
-                                fontSize: 20.0,
-                                color: Colors.white60,
-                                fontWeight: FontWeight.w300),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
-                          ),
-                        ),
-                      ),
-                      new MaterialButton(
-                        padding: const EdgeInsets.all(8.0),
-                        // textColor: Colors.re,
-                        color: Colors.blue,
-
-                        child: new Text(
-                          "Go",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 30),
-                        ),
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              new MaterialPageRoute(
-                                  builder: (context) => new Page5()));
-                        },
-                      ),
-                    ],
-                  )),
-              Container(
-                child: Card(
-                  color: Color.fromRGBO(90, 58, 29, 10),
-                ),
-                height: 40,
-                margin: EdgeInsets.all(8.0),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class Page5 extends StatelessWidget {
-  TextEditingController _textFieldController = TextEditingController();
-
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: Scaffold(
-        backgroundColor: Color.fromRGBO(81, 23, 19, 5),
-        body: SafeArea(
-//            child: Column(
-//          mainAxisAlignment: MainAxisAlignment.center,
-//          children: <Widget>[
-//            Image.asset('images/maingif.gif'),
-//            Text('HANGMAN',
-//                style: TextStyle(
-//                    fontFamily: 'Pacifico',
-//                    color: Colors.teal.shade50,
-//                    fontSize: 40,
-//                    fontWeight: FontWeight.bold)),
-//            MaterialButton(
-//                child: Text(
-//                  'PLAY',
-//                  style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
-//                ),
-//                textTheme: ButtonTextTheme.accent,
-//                color: Colors.orange,
-//                onPressed: () {
-//                  Navigator.of(context).push(_createRoute());
-//                }),
-//            Card(
-//              margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
-//              color: Colors.white,
-//              child: Padding(
-//                padding: EdgeInsets.all(15),
-//                child: Row(
-//                  children: <Widget>[
-//                    Icon(
-//                      Icons.email,
-//                      color: Colors.teal,
-//                    ),
-//                    SizedBox(width: 15.0),
-//                    Text(
-//                      'Jeraldjacob10@gmail.com',
-//                      style: TextStyle(
-//                          fontSize: 20.0,
-//                          fontFamily: 'Source Sans Pro',
-//                          color: Colors.teal),
-//                    )
-//                  ],
-//                ),
-//              ),
-//            )
-//          ],
-//        ),
-          child: ListView(
-            children: <Widget>[
-              // Max Size
-//              Container(
-//                  height: 100,
-//                  color: Color.fromRGBO(90, 58, 29, 10),
-//                  margin: EdgeInsets.all(8.0),
-//                  child: Image.asset(
-//                    'images/maingif.gif',
-//                    width: 300,
-//                    height: 280,
-//                  )),
-              Container(
-                height: 100,
-                color: Color.fromRGBO(90, 58, 29, 10),
-                margin: EdgeInsets.all(8.0),
-                child: Image.asset(
-                  'images/Hangman-Logo.png',
-                  width: 295,
-                  height: 280,
-                ),
-              ),
-
-              Container(
-                  height: 420,
-                  //  color: Color.fromRGBO(76, 118, 45, 10),
-                  margin: EdgeInsets.all(8.0),
-                  child: Column(
-                    children: <Widget>[
-                      Image.asset('images/hangman/five.png'),
-                      SizedBox(
-                        width: 20,
-                        height: 20,
-                      ),
-                      Padding(
-//Add padding around textfield
-                        padding: EdgeInsets.symmetric(horizontal: 25.0),
-                        child: TextField(
-                          cursorColor: Colors.white,
-                          controller: _textFieldController,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w100,
-                          ),
-                          decoration: InputDecoration(
-//Add th Hint text here.
-
-                            hintText: "_ _ _ _ _",
-                            hintStyle: TextStyle(
-                                fontSize: 20.0,
-                                color: Colors.white60,
-                                fontWeight: FontWeight.w300),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
-                          ),
-                        ),
-                      ),
-                      new MaterialButton(
-                        padding: const EdgeInsets.all(8.0),
-                        // textColor: Colors.re,
-                        color: Colors.blue,
-
-                        child: new Text(
-                          "Go",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 30),
-                        ),
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              new MaterialPageRoute(
-                                  builder: (context) => new Page6()));
-                        },
-                      ),
-                    ],
-                  )),
-              Container(
-                child: Card(
-                  color: Color.fromRGBO(90, 58, 29, 10),
-                ),
-                height: 40,
-                margin: EdgeInsets.all(8.0),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class Page6 extends StatelessWidget {
-  TextEditingController _textFieldController = TextEditingController();
-
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: Scaffold(
-        backgroundColor: Color.fromRGBO(81, 23, 19, 5),
-        body: SafeArea(
-//            child: Column(
-//          mainAxisAlignment: MainAxisAlignment.center,
-//          children: <Widget>[
-//            Image.asset('images/maingif.gif'),
-//            Text('HANGMAN',
-//                style: TextStyle(
-//                    fontFamily: 'Pacifico',
-//                    color: Colors.teal.shade50,
-//                    fontSize: 40,
-//                    fontWeight: FontWeight.bold)),
-//            MaterialButton(
-//                child: Text(
-//                  'PLAY',
-//                  style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
-//                ),
-//                textTheme: ButtonTextTheme.accent,
-//                color: Colors.orange,
-//                onPressed: () {
-//                  Navigator.of(context).push(_createRoute());
-//                }),
-//            Card(
-//              margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
-//              color: Colors.white,
-//              child: Padding(
-//                padding: EdgeInsets.all(15),
-//                child: Row(
-//                  children: <Widget>[
-//                    Icon(
-//                      Icons.email,
-//                      color: Colors.teal,
-//                    ),
-//                    SizedBox(width: 15.0),
-//                    Text(
-//                      'Jeraldjacob10@gmail.com',
-//                      style: TextStyle(
-//                          fontSize: 20.0,
-//                          fontFamily: 'Source Sans Pro',
-//                          color: Colors.teal),
-//                    )
-//                  ],
-//                ),
-//              ),
-//            )
-//          ],
-//        ),
-          child: ListView(
-            children: <Widget>[
-              // Max Size
-//              Container(
-//                  height: 100,
-//                  color: Color.fromRGBO(90, 58, 29, 10),
-//                  margin: EdgeInsets.all(8.0),
-//                  child: Image.asset(
-//                    'images/maingif.gif',
-//                    width: 300,
-//                    height: 280,
-//                  )),
-              Container(
-                height: 100,
-                color: Color.fromRGBO(90, 58, 29, 10),
-                margin: EdgeInsets.all(8.0),
-                child: Image.asset(
-                  'images/Hangman-Logo.png',
-                  width: 295,
-                  height: 280,
-                ),
-              ),
-
-              Container(
-                  height: 420,
-                  //  color: Color.fromRGBO(76, 118, 45, 10),
-                  margin: EdgeInsets.all(8.0),
-                  child: Column(
-                    children: <Widget>[
-                      Image.asset('images/hangman/six.png'),
-                      SizedBox(
-                        width: 20,
-                        height: 20,
-                      ),
-                      Padding(
-//Add padding around textfield
-                        padding: EdgeInsets.symmetric(horizontal: 25.0),
-                        child: TextField(
-                          cursorColor: Colors.white,
-                          controller: _textFieldController,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w100,
-                          ),
-                          decoration: InputDecoration(
-//Add th Hint text here.
-
-                            hintText: "_ _ _ _ _",
-                            hintStyle: TextStyle(
-                                fontSize: 20.0,
-                                color: Colors.white60,
-                                fontWeight: FontWeight.w300),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
-                          ),
-                        ),
-                      ),
-                      new MaterialButton(
-                        padding: const EdgeInsets.all(8.0),
-                        // textColor: Colors.re,
-                        color: Colors.blue,
-
-                        child: new Text(
-                          "Go",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 30),
-                        ),
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              new MaterialPageRoute(
-                                  builder: (context) => new Next()));
-                        },
-                      ),
-                    ],
-                  )),
-              Container(
-                child: Card(
-                  color: Color.fromRGBO(90, 58, 29, 10),
-                ),
-                height: 40,
-                margin: EdgeInsets.all(8.0),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class Page7 extends StatelessWidget {
+class Page2 extends StatelessWidget {
   TextEditingController _textFieldController = TextEditingController();
 
   Widget build(BuildContext context) {
