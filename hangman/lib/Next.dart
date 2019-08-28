@@ -3,11 +3,14 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:hangman/main.dart';
 import 'package:http/http.dart' as http;
+import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:video_player/video_player.dart';
 
 import 'NextPage.dart';
 
+String _word;
+List data;
 String _email = '';
 
 class Next extends StatefulWidget {
@@ -805,13 +808,14 @@ class _SecondPageState extends State<SecondPage> {
   var _hanganImage = new List<String>();
   String _temp = 'images/hangman/1.png';
   final String url = "https://www.randomlists.com/data/vocabulary-words.json";
-  List data;
+
+  String _word = 'APPLE';
   var _wrongGuess = true;
   var completed = true;
   var _wrongGuessNumber = 0;
 
   var resultList = new List<String>();
-  String _word = 'APPLE';
+
   var _filler = '-';
 
   VideoPlayerController _controller;
@@ -821,6 +825,7 @@ class _SecondPageState extends State<SecondPage> {
   @override
   void initState() {
     super.initState();
+    getJsonData();
     _loadCounter();
     _loadBlank();
     this.getJsonData();
@@ -1581,6 +1586,7 @@ class _SecondPageState extends State<SecondPage> {
       if (_wrongGuessCharacters.contains(_tempWord)) {
         _wrongGuessCharacters.remove(_tempWord);
       } else {}
+      //_disp();
       _hangmanImage();
     }
 
@@ -1592,8 +1598,8 @@ class _SecondPageState extends State<SecondPage> {
 
     if (_resultString == _word) {
       this._temp = 'images/hangman/win.jpg';
-
       _winTheGame();
+      //_winTheGame();
     } else if (_wrongGuessCharacters.length == 2) {
       this._temp = 'images/hangman/7.png';
     } else if (_wrongGuessCharacters.length == 3) {
@@ -1608,10 +1614,92 @@ class _SecondPageState extends State<SecondPage> {
     }
   }
 
-  void _disp() {}
+  void _winTheGame() {
+    var alertStyle = AlertStyle(
+      animationType: AnimationType.fromTop,
+      isCloseButton: false,
+      isOverlayTapDismiss: false,
+      descStyle: TextStyle(fontWeight: FontWeight.bold),
+      animationDuration: Duration(milliseconds: 400),
+      titleStyle: TextStyle(
+        color: Colors.red,
+      ),
+    );
+
+    Alert(
+      context: context,
+      style: alertStyle,
+      // type: AlertType.error,
+      title: "WELL DONE !",
+
+      image: Image.asset("images/sucess.jpeg"),
+      buttons: [
+        DialogButton(
+          child: Text(
+            "PLAY",
+            style: TextStyle(color: Colors.white, fontSize: 20),
+          ),
+          onPressed: () {
+            Navigator.push(context,
+                new MaterialPageRoute(builder: (context) => new SecondPage()));
+          },
+          width: 120,
+        )
+      ],
+    ).show();
+  }
+
+  void _lossTheGame() {
+    var alertStyle = AlertStyle(
+      animationType: AnimationType.fromTop,
+      isCloseButton: false,
+      isOverlayTapDismiss: false,
+      descStyle: TextStyle(fontWeight: FontWeight.bold),
+      animationDuration: Duration(milliseconds: 400),
+      titleStyle: TextStyle(
+        color: Colors.red,
+      ),
+    );
+
+    Alert(
+      context: context,
+      style: alertStyle,
+      // type: AlertType.error,
+      title: "OOPS YOU FAILED",
+
+      image: Image.asset("images/loss.jpeg"),
+      buttons: [
+        DialogButton(
+          child: Text(
+            "TRY",
+            style: TextStyle(color: Colors.white, fontSize: 20),
+          ),
+          onPressed: () {
+            Navigator.push(context,
+                new MaterialPageRoute(builder: (context) => new SecondPage()));
+          },
+          color: Color.fromRGBO(0, 179, 134, 1.0),
+        ),
+        DialogButton(
+          child: Text(
+            "BACK",
+            style: TextStyle(color: Colors.white, fontSize: 20),
+          ),
+          onPressed: () {
+            Navigator.push(context,
+                new MaterialPageRoute(builder: (context) => new SecondPage()));
+          },
+          gradient: LinearGradient(colors: [
+            Color.fromRGBO(116, 116, 191, 1.0),
+            Color.fromRGBO(52, 138, 199, 1.0)
+          ]),
+        )
+      ],
+    ).show();
+  }
 
   void _loadBlank() {
-    for (int i = 0; i < _word.length; i++) {
+    for (int i = 0; i < this._word.length; i++) {
       this.resultList.add(_filler);
     }
   }
@@ -1630,97 +1718,6 @@ class _SecondPageState extends State<SecondPage> {
 //          context, new MaterialPageRoute(builder: (context) => new Page2()));
 //    }
 
-  Future<void> _winTheGame() async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Colors.greenAccent,
-          title: Text(
-            'WELL DONE',
-            style: TextStyle(
-              fontSize: 40,
-              fontFamily: 'Caesar_Dressing',
-              color: Colors.black,
-              fontWeight: FontWeight.w100,
-            ),
-          ),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Text('would you give me another   chance'),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            FlatButton(
-                child: Text(
-                  '>',
-                  style: TextStyle(
-                    fontSize: 50,
-                    fontFamily: 'Caesar_Dressing',
-                    color: Colors.black,
-                    fontWeight: FontWeight.w100,
-                  ),
-                ),
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      new MaterialPageRoute(
-                          builder: (context) => new SecondPage()));
-                }),
-          ],
-        );
-      },
-    );
-  }
-
-  Future<void> _lossTheGame() async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Colors.greenAccent,
-          title: Text(
-            'OOPS YOU FAILED',
-            style: TextStyle(
-              fontSize: 40,
-              fontFamily: 'Caesar_Dressing',
-              color: Colors.black,
-              fontWeight: FontWeight.w100,
-            ),
-          ),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Text('would you give me one more chance'),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            FlatButton(
-                child: Text(
-                  '>',
-                  style: TextStyle(
-                    fontSize: 50,
-                    fontFamily: 'Caesar_Dressing',
-                    color: Colors.black,
-                    fontWeight: FontWeight.w100,
-                  ),
-                ),
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      new MaterialPageRoute(
-                          builder: (context) => new SecondPage()));
-                }),
-          ],
-        );
-      },
-    );
-  }
 }
 
 class Page1 extends StatelessWidget {
@@ -1877,13 +1874,15 @@ class Page1 extends StatelessWidget {
 class Page2 extends StatelessWidget {
   TextEditingController _textFieldController = TextEditingController();
 
+  String _temp = '/hangman/1.png';
+
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
       home: Scaffold(
-        backgroundColor: Color.fromRGBO(81, 23, 19, 5),
+        backgroundColor: Color.fromRGBO(81, 123, 19, 2),
         body: SafeArea(
 //            child: Column(
 //          mainAxisAlignment: MainAxisAlignment.center,
@@ -1977,7 +1976,8 @@ class Page2 extends StatelessWidget {
                           decoration: InputDecoration(
 //Add th Hint text here.
 
-                            hintText: "Enter your name",
+                            hintText:
+                                "Enter your name" + (_word = data[1]['name']),
                             hintStyle: TextStyle(
                                 fontSize: 20.0,
                                 color: Colors.white60,
@@ -1994,17 +1994,14 @@ class Page2 extends StatelessWidget {
                         color: Colors.blue,
 
                         child: new Text(
-                          "Finish",
+                          "Finish " + _word,
                           style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
                               fontSize: 30),
                         ),
                         onPressed: () {
-                          Navigator.push(
-                              context,
-                              new MaterialPageRoute(
-                                  builder: (context) => new Game()));
+                          _hangmanImage();
                         },
                       ),
                     ],
@@ -2016,10 +2013,234 @@ class Page2 extends StatelessWidget {
                 height: 40,
                 margin: EdgeInsets.all(8.0),
               ),
+              Container(
+                height: 50,
+                color: Color.fromRGBO(234, 182, 111, 0),
+                margin: EdgeInsets.all(8.0),
+                child: Image.asset(
+                  _temp,
+                  width: 295,
+                  height: 280,
+                ),
+              ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  void _hangmanImage() {
+    var _resultString = _word;
+
+    if (_resultString == _word) {
+      this._temp = 'images/hangman/11.png';
+    } else {
+      this._temp = 'images/hangman/10.png';
+    }
+  }
+}
+
+class TestAPI extends StatefulWidget {
+  @override
+  TestAPIeState createState() => new TestAPIeState();
+}
+
+class TestAPIeState extends State<TestAPI> {
+  final String url = "https://www.randomlists.com/data/vocabulary-words.json";
+  List data;
+
+  @override
+  void initState() {
+    super.initState();
+    this.getJsonData();
+  }
+
+  Future<String> getJsonData() async {
+    var response = await http
+        .get(Uri.encodeFull(url), headers: {"Accept": "application/json"});
+
+    print(response.body);
+
+    setState(() {
+      var toJsonData = json.decode(response.body);
+      data = toJsonData['data'];
+    });
+
+    return "Success";
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return new Scaffold(
+      appBar: new AppBar(
+        title: new Text("GET API"),
+      ),
+      body: Container(
+        child: ListView.builder(
+            itemCount: data == null ? 0 : 1,
+            itemBuilder: (BuildContext context, int index) {
+              return new Container(
+                  child: new Center(
+                      child: new Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  new Card(
+                    child: new Container(
+                      child: new Text(data[index]['name']),
+                      padding: const EdgeInsets.all(20),
+                    ),
+                  ),
+                  RaisedButton(
+                    child: Text("hai"),
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          new MaterialPageRoute(
+                              builder: (context) => new SecondPage()));
+                    },
+                  )
+                ],
+              )));
+            }),
+      ),
+    );
+  }
+}
+
+class Test extends StatefulWidget {
+  TextEditingController _textFieldController = TextEditingController();
+  @override
+  TestState createState() => new TestState();
+}
+
+class TestState extends State<Test> {
+  final String url = "https://www.randomlists.com/data/vocabulary-words.json";
+
+  String _temp = 'images/hangman/9.png';
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: Scaffold(
+        backgroundColor: Color.fromRGBO(81, 123, 19, 2),
+        body: SafeArea(
+          child: ListView(
+            children: <Widget>[
+              // Max Size
+//              Container(
+//                  height: 100,
+//                  color: Color.fromRGBO(90, 58, 29, 10),
+//                  margin: EdgeInsets.all(8.0),
+//                  child: Image.asset(
+//                    'images/maingif.gif',
+//                    width: 300,
+//                    height: 280,
+//                  )),
+              Container(
+                height: 100,
+                color: Color.fromRGBO(90, 58, 29, 10),
+                margin: EdgeInsets.all(8.0),
+                child: Image.asset(
+                  _temp,
+                  width: 295,
+                  height: 280,
+                ),
+              ),
+
+              Container(
+                  height: 420,
+                  //  color: Color.fromRGBO(76, 118, 45, 10),
+                  margin: EdgeInsets.all(8.0),
+                  child: Column(
+                    children: <Widget>[
+                      Image.asset('images/hangman/seveen.png'),
+                      SizedBox(
+                        width: 20,
+                        height: 20,
+                      ),
+                      Padding(
+//Add padding around textfield
+                        padding: EdgeInsets.symmetric(horizontal: 25.0),
+                        child: TextField(
+                          cursorColor: Colors.white,
+                          //        controller: _textFieldController,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w100,
+                          ),
+                          decoration: InputDecoration(
+//Add th Hint text here.
+
+                            hintText: "Enter your name and address " +
+                                (_word = data[1]['name']),
+                            hintStyle: TextStyle(
+                                fontSize: 20.0,
+                                color: Colors.white60,
+                                fontWeight: FontWeight.w300),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                          ),
+                        ),
+                      ),
+                      new MaterialButton(
+                        padding: const EdgeInsets.all(8.0),
+                        // textColor: Colors.re,
+                        color: Colors.blue,
+
+                        child: new Text(
+                          "Finish " + _word,
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 30),
+                        ),
+                        onPressed: () {
+                          _hangmanImage();
+                        },
+                      ),
+                    ],
+                  )),
+              Container(
+                child: Card(
+                  color: Color.fromRGBO(90, 58, 29, 10),
+                ),
+                height: 40,
+                margin: EdgeInsets.all(8.0),
+              ),
+              Container(
+                height: 50,
+                color: Color.fromRGBO(234, 182, 111, 0),
+                margin: EdgeInsets.all(8.0),
+                child: Image.asset(
+                  _temp,
+                  width: 295,
+                  height: 280,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _hangmanImage() {
+    var _resultString = _word;
+
+    if (_resultString != _word) {
+      this._temp = 'images/hangman/1.png';
+    } else {
+      this._temp = 'images/hangman/10.png';
+    }
   }
 }
