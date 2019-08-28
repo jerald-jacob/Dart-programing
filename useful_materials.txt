@@ -4,3 +4,4 @@ https://www.youtube.com/watch?v=qWL1lGchpRA&list=PLR2qQy0Zxs_UdqAcaipPR3CG1Ly57U
 MVP (Model-View-Presenter)
 (Transition)https://medium.com/flutter-community/everything-you-need-to-know-about-flutter-page-route-transition-9ef5c1b32823
 http://flutterdevs.com/blog/using-sharedpreferences-in-flutter/ (SharedPreferences)
+https://flutterawesome.com/xustomizable-and-easy-to-use-alert-popup-dialogs-for-flutter/ (alertdialoig)
