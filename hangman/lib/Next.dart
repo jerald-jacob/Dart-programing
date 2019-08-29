@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:hangman/main.dart';
@@ -9,7 +10,6 @@ import 'package:video_player/video_player.dart';
 
 import 'NextPage.dart';
 
-String _word;
 List data;
 String _email = '';
 
@@ -809,7 +809,8 @@ class _SecondPageState extends State<SecondPage> {
   String _temp = 'images/hangman/1.png';
   final String url = "https://www.randomlists.com/data/vocabulary-words.json";
 
-  String _word = 'APPLE';
+  String _word;
+  int _count = 0;
   var _wrongGuess = true;
   var completed = true;
   var _wrongGuessNumber = 0;
@@ -825,9 +826,9 @@ class _SecondPageState extends State<SecondPage> {
   @override
   void initState() {
     super.initState();
-    getJsonData();
+
     _loadCounter();
-    _loadBlank();
+    //_loadBlank();
     this.getJsonData();
     _controller = VideoPlayerController.asset('video/gamemusic.mp4')
 
@@ -865,6 +866,25 @@ class _SecondPageState extends State<SecondPage> {
     setState(() {
       var toJsonData = json.decode(response.body);
       data = toJsonData['data'];
+
+      if (response.statusCode == 200) {
+        Random rnd;
+        int min = 0;
+        int max = 100;
+        rnd = new Random();
+        var r = min + rnd.nextInt(max - min);
+        this._word = data[r]['name'];
+        _count = _count + 1;
+        for (int i = 0; i < this._word.length; i++) {
+          this.resultList.add(_filler);
+        }
+      } else {
+        this._word = data[1]['name'];
+        _count = _count + 1;
+        for (int i = 0; i < this._word.length; i++) {
+          this.resultList.add(_filler);
+        }
+      }
     });
 
     return "Success";
@@ -1020,7 +1040,7 @@ class _SecondPageState extends State<SecondPage> {
                                     ),
                                   ),
                                   onPressed: () {
-                                    _guess('E');
+                                    _guess('e');
                                     _incrementCounter();
                                   }),
                             ),
@@ -1060,7 +1080,7 @@ class _SecondPageState extends State<SecondPage> {
                                     ),
                                   ),
                                   onPressed: () {
-                                    _guess('T');
+                                    _guess('t');
                                     _incrementCounter();
                                   }),
                             ),
@@ -1186,7 +1206,7 @@ class _SecondPageState extends State<SecondPage> {
                                     ),
                                   ),
                                   onPressed: () {
-                                    _guess('A');
+                                    _guess('a');
                                     _incrementCounter();
                                   }),
                             ),
@@ -1449,7 +1469,7 @@ class _SecondPageState extends State<SecondPage> {
                                     ),
                                   ),
                                   onPressed: () {
-                                    _guess('B');
+                                    _guess('b');
                                     _incrementCounter();
                                   }),
                             ),
@@ -1540,19 +1560,19 @@ class _SecondPageState extends State<SecondPage> {
                   ],
                 ),
               ),
-//              Container(
-//                child: Text(
-//                  "THE WORD YOU ENTERD IS " + _temp + " ",
-//                  //   _wrongGuessCharacters.toString(),
-//                  //_guessedCharacters.toString(),
-//                  style: TextStyle(
-//                    fontSize: 20,
-//                    fontFamily: 'Caesar_Dressing',
-//                    color: Colors.white,
-//                    fontWeight: FontWeight.w300,
-//                  ),
-//                ),
-//              ),
+              Container(
+                child: Text(
+                  "THE WORD YOU ENTERD IS " + _temp + " ",
+                  //   _wrongGuessCharacters.toString(),
+                  //_guessedCharacters.toString(),
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontFamily: 'Caesar_Dressing',
+                    color: Colors.white,
+                    fontWeight: FontWeight.w300,
+                  ),
+                ),
+              ),
             ],
           ),
         ),
@@ -1561,6 +1581,7 @@ class _SecondPageState extends State<SecondPage> {
   }
 
   void _guess(c) {
+    c = c.toLowerCase();
     for (int i = 0; i < _word.length; i++) {
       var _tempWord = _word[i];
       if (_word[i] == c) {
@@ -1666,7 +1687,7 @@ class _SecondPageState extends State<SecondPage> {
       style: alertStyle,
       // type: AlertType.error,
       title: "OOPS YOU FAILED",
-
+      desc: "word is " + _word,
       image: Image.asset("images/loss.jpeg"),
       buttons: [
         DialogButton(
@@ -1696,12 +1717,6 @@ class _SecondPageState extends State<SecondPage> {
         )
       ],
     ).show();
-  }
-
-  void _loadBlank() {
-    for (int i = 0; i < this._word.length; i++) {
-      this.resultList.add(_filler);
-    }
   }
 
   _wordCount() async {
@@ -1873,7 +1888,7 @@ class Page1 extends StatelessWidget {
 
 class Page2 extends StatelessWidget {
   TextEditingController _textFieldController = TextEditingController();
-
+  String _word;
   String _temp = '/hangman/1.png';
 
   Widget build(BuildContext context) {
@@ -2118,7 +2133,7 @@ class TestState extends State<Test> {
   final String url = "https://www.randomlists.com/data/vocabulary-words.json";
 
   String _temp = 'images/hangman/9.png';
-
+  String _word = 'ssdjdsjdjs';
   @override
   void initState() {
     super.initState();
@@ -2180,8 +2195,7 @@ class TestState extends State<Test> {
                           decoration: InputDecoration(
 //Add th Hint text here.
 
-                            hintText: "Enter your name and address " +
-                                (_word = data[1]['name']),
+                            hintText: "Enter your name and address ",
                             hintStyle: TextStyle(
                                 fontSize: 20.0,
                                 color: Colors.white60,

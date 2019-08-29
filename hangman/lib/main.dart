@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:hangman/Next.dart';
+import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 main() {
@@ -17,11 +20,27 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   String _email = '';
-
+  final String url = "https://www.randomlists.com/data/vocabulary-words.json";
+  List data;
   @override
   void initState() {
     super.initState();
     _loadCounter();
+    this.getJsonData();
+  }
+
+  Future<String> getJsonData() async {
+    var response = await http
+        .get(Uri.encodeFull(url), headers: {"Accept": "application/json"});
+
+    print(response.body);
+
+    setState(() {
+      var toJsonData = json.decode(response.body);
+      data = toJsonData['data'];
+    });
+
+    return "Success";
   }
 
   _loadCounter() async {
@@ -37,6 +56,7 @@ class _MyHomePageState extends State<MyHomePage> {
       _email = "jerald jacob";
     });
     prefs.setString('email', _email);
+    await prefs.setStringList('mylist', data);
   }
 
   @override
@@ -70,7 +90,12 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-class MainPage extends StatelessWidget {
+class MainPage extends StatefulWidget {
+  @override
+  _MainPageeState createState() => _MainPageeState();
+}
+
+class _MainPageeState extends State<MainPage> {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
@@ -79,51 +104,6 @@ class MainPage extends StatelessWidget {
       home: Scaffold(
         backgroundColor: Color.fromRGBO(234, 182, 111, 88),
         body: SafeArea(
-//            child: Column(
-//          mainAxisAlignment: MainAxisAlignment.center,
-//          children: <Widget>[
-//            Image.asset('images/maingif.gif'),
-//            Text('HANGMAN',
-//                style: TextStyle(
-//                    fontFamily: 'Pacifico',
-//                    color: Colors.teal.shade50,
-//                    fontSize: 40,
-//                    fontWeight: FontWeight.bold)),
-//            MaterialButton(
-//                child: Text(
-//                  'PLAY',
-//                  style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
-//                ),
-//                textTheme: ButtonTextTheme.accent,
-//                color: Colors.orange,
-//                onPressed: () {
-//                  Navigator.of(context).push(_createRoute());
-//                }),
-//            Card(
-//              margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
-//              color: Colors.white,
-//              child: Padding(
-//                padding: EdgeInsets.all(15),
-//                child: Row(
-//                  children: <Widget>[
-//                    Icon(
-//                      Icons.email,
-//                      color: Colors.teal,
-//                    ),
-//                    SizedBox(width: 15.0),
-//                    Text(
-//                      'Jeraldjacob10@gmail.com',
-//                      style: TextStyle(
-//                          fontSize: 20.0,
-//                          fontFamily: 'Source Sans Pro',
-//                          color: Colors.teal),
-//                    )
-//                  ],
-//                ),
-//              ),
-//            )
-//          ],
-//        ),
           child: ListView(
             children: <Widget>[
               // Max Size
@@ -296,7 +276,7 @@ class MainPage extends StatelessWidget {
 
 Route _createRoute() {
   return PageRouteBuilder(
-    pageBuilder: (context, animation, secondaryAnimation) => TestAPI(),
+    pageBuilder: (context, animation, secondaryAnimation) => SecondPage(),
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       return child;
     },
