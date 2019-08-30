@@ -1,101 +1,49 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:hangman/Next.dart';
-import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:splashscreen/splashscreen.dart';
 
 main() {
   runApp(MaterialApp(
-    home: MainPage(),
+    home: MyApp1(),
   ));
 }
 
-class MyHomePage extends StatefulWidget {
-  final String name;
-  const MyHomePage(this.name);
+class MyApp1 extends StatefulWidget {
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _MyAppState createState() => new _MyAppState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  String _email = '';
-  final String url = "https://www.randomlists.com/data/vocabulary-words.json";
-  List data;
-  @override
-  void initState() {
-    super.initState();
-    _loadCounter();
-    this.getJsonData();
-  }
-
-  Future<String> getJsonData() async {
-    var response = await http
-        .get(Uri.encodeFull(url), headers: {"Accept": "application/json"});
-
-    print(response.body);
-
-    setState(() {
-      var toJsonData = json.decode(response.body);
-      data = toJsonData['data'];
-    });
-
-    return "Success";
-  }
-
-  _loadCounter() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _email = (prefs.getString('email') ?? '');
-    });
-  }
-
-  _incrementCounter() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _email = "jerald jacob";
-    });
-    prefs.setString('email', _email);
-    await prefs.setStringList('mylist', data);
-  }
-
+class _MyAppState extends State<MyApp1> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("title"),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              '$_email',
-            ),
-            new RaisedButton(
-              child: new Text("next2"),
-              onPressed: () {
-                Navigator.push(context,
-                    new MaterialPageRoute(builder: (context) => new Next()));
-              },
-            ),
-          ],
+    return new SplashScreen(
+      loaderColor: Colors.white,
+      seconds: 14,
+      navigateAfterSeconds: new MainPage(),
+      title: new Text(
+        'Tell me wow ',
+        style: new TextStyle(
+          fontSize: 40,
+          fontFamily: 'IndieFlower',
+          color: Colors.white,
+          fontWeight: FontWeight.w300,
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        child: Icon(Icons.add),
-      ),
+      image: new Image.asset('images/tellmewow.png'),
+      backgroundColor: Color.fromARGB(237, 188, 59, 100),
+      styleTextUnderTheLoader: new TextStyle(),
+      photoSize: 100.0,
+      onClick: () => print("Flutter Egypt"),
     );
   }
 }
 
 class MainPage extends StatefulWidget {
   @override
-  _MainPageeState createState() => _MainPageeState();
+  _MainPageState createState() => _MainPageState();
 }
 
-class _MainPageeState extends State<MainPage> {
+class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
@@ -203,9 +151,7 @@ class _MainPageeState extends State<MainPage> {
                         height: 30,
                       ),
                       RaisedButton(
-                        onPressed: () {
-                          Navigator.of(context).push(_createRoute());
-                        },
+                        onPressed: () {},
                         textColor: Colors.white,
                         padding: const EdgeInsets.all(3.0),
                         child: Container(

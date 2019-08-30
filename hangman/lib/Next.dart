@@ -805,7 +805,6 @@ class _SecondPageState extends State<SecondPage> {
   String _userInput = '';
   Set _guessedCharacters = new Set();
   Set _wrongGuessCharacters = new Set();
-  var _hanganImage = new List<String>();
   String _temp = 'images/hangman/1.png';
   final String url = "https://www.randomlists.com/data/vocabulary-words.json";
 
@@ -1560,19 +1559,19 @@ class _SecondPageState extends State<SecondPage> {
                   ],
                 ),
               ),
-              Container(
-                child: Text(
-                  "THE WORD YOU ENTERD IS " + _temp + " ",
-                  //   _wrongGuessCharacters.toString(),
-                  //_guessedCharacters.toString(),
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontFamily: 'Caesar_Dressing',
-                    color: Colors.white,
-                    fontWeight: FontWeight.w300,
-                  ),
-                ),
-              ),
+//              Container(
+//                child: Text(
+//                  "THE WORD YOU ENTERD IS " + _temp + " ",
+//                  //   _wrongGuessCharacters.toString(),
+//                  //_guessedCharacters.toString(),
+//                  style: TextStyle(
+//                    fontSize: 20,
+//                    fontFamily: 'Caesar_Dressing',
+//                    color: Colors.white,
+//                    fontWeight: FontWeight.w300,
+//                  ),
+//                ),
+//              ),
             ],
           ),
         ),

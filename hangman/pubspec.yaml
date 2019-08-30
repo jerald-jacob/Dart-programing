@@ -34,6 +34,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   video_player:
+  splashscreen:
 
 
 # For information on the generic Dart part of this file, see the
@@ -62,6 +63,9 @@ flutter:
     - family: Caesar_Dressing
       fonts:
         - asset: fonts/Caesar_Dressing/CaesarDressing-Regular.ttf
+    - family: IndieFlower
+      fonts:
+        - asset: fonts/IndieFlower-Regular.ttf
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 
