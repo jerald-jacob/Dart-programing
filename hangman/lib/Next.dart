@@ -8,10 +8,8 @@ import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:video_player/video_player.dart';
 
-import 'NextPage.dart';
-
 List data;
-String _email = '';
+String _userEmail = '';
 
 class Next extends StatefulWidget {
   @override
@@ -28,14 +26,14 @@ class _NextState extends State<Next> {
   _loadCounter() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      _email = (prefs.getString('email') ?? '');
+      _userEmail = (prefs.getString('email') ?? '');
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: new Text("read value from sharepreference is:" + _email),
+      child: new Text("read value from sharepreference is:" + _userEmail),
     );
   }
 }
@@ -344,7 +342,7 @@ class FirstPage extends StatefulWidget {
 }
 
 class _FirstPageState extends State<FirstPage> {
-  String _name = '';
+  String _currentUser = '';
   VideoPlayerController _controller;
 
   final myController = TextEditingController();
@@ -367,16 +365,16 @@ class _FirstPageState extends State<FirstPage> {
   _loadCounter() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      _name = (prefs.getString('name') ?? '');
+      _currentUser = (prefs.getString('name') ?? '');
     });
   }
 
   _incrementCounter() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      _name = myController.text;
+      _currentUser = myController.text;
     });
-    prefs.setString('name', _name);
+    prefs.setString('name', _currentUser);
   }
 
   Widget build(BuildContext context) {
@@ -565,7 +563,7 @@ class _FirstPageState extends State<FirstPage> {
                                         context,
                                         new MaterialPageRoute(
                                             builder: (context) =>
-                                                new NextPage()));
+                                                new SecondPage()));
                                   }),
                             ),
                             Expanded(
@@ -801,15 +799,13 @@ class SecondPage extends StatefulWidget {
 }
 
 class _SecondPageState extends State<SecondPage> {
-  String _name = '';
+  String _currentUser = '';
   String _userInput = '';
   Set _guessedCharacters = new Set();
   Set _wrongGuessCharacters = new Set();
-  String _temp = 'images/hangman/1.png';
+  String _imagePath = 'images/hangman/1.png';
   final String url = "https://www.randomlists.com/data/vocabulary-words.json";
-
-  String _word;
-  int _count = 0;
+  String _wordFromAPI;
   var _wrongGuess = true;
   var completed = true;
   var _wrongGuessNumber = 0;
@@ -844,16 +840,16 @@ class _SecondPageState extends State<SecondPage> {
   _loadCounter() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      _name = (prefs.getString('name') ?? '');
+      _currentUser = (prefs.getString('name') ?? '');
     });
   }
 
   _incrementCounter() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      _name = myController.text;
+      _currentUser = myController.text;
     });
-    prefs.setString('name', _name);
+    prefs.setString('name', _currentUser);
   }
 
   Future<String> getJsonData() async {
@@ -872,15 +868,15 @@ class _SecondPageState extends State<SecondPage> {
         int max = 100;
         rnd = new Random();
         var r = min + rnd.nextInt(max - min);
-        this._word = data[r]['name'];
-        _count = _count + 1;
-        for (int i = 0; i < this._word.length; i++) {
+        this._wordFromAPI = data[r]['name'];
+
+        for (int i = 0; i < this._wordFromAPI.length; i++) {
           this.resultList.add(_filler);
         }
       } else {
-        this._word = data[1]['name'];
-        _count = _count + 1;
-        for (int i = 0; i < this._word.length; i++) {
+        this._wordFromAPI = data[1]['name'];
+
+        for (int i = 0; i < this._wordFromAPI.length; i++) {
           this.resultList.add(_filler);
         }
       }
@@ -912,7 +908,7 @@ class _SecondPageState extends State<SecondPage> {
                 color: Color.fromRGBO(234, 182, 111, 0),
                 margin: EdgeInsets.all(8.0),
                 child: Image.asset(
-                  _temp,
+                  _imagePath,
                 ),
               ),
               Container(
@@ -926,7 +922,7 @@ class _SecondPageState extends State<SecondPage> {
                     ),
 
                     Text(
-                      "PLAYER " + _name,
+                      "PLAYER " + _currentUser,
                       style: TextStyle(
                         fontSize: 20,
                         fontFamily: 'Caesar_Dressing',
@@ -1552,7 +1548,7 @@ class _SecondPageState extends State<SecondPage> {
                                   fontWeight: FontWeight.w300,
                                 ),
                               ),
-                              onPressed: _wordCount),
+                              onPressed: _wordFromAPICount),
                         ],
                       ),
                     ),
@@ -1561,7 +1557,7 @@ class _SecondPageState extends State<SecondPage> {
               ),
 //              Container(
 //                child: Text(
-//                  "THE WORD YOU ENTERD IS " + _temp + " ",
+//                  "THE WORD YOU ENTERD IS " + _imagePath + " ",
 //                  //   _wrongGuessCharacters.toString(),
 //                  //_guessedCharacters.toString(),
 //                  style: TextStyle(
@@ -1581,9 +1577,9 @@ class _SecondPageState extends State<SecondPage> {
 
   void _guess(c) {
     c = c.toLowerCase();
-    for (int i = 0; i < _word.length; i++) {
-      var _tempWord = _word[i];
-      if (_word[i] == c) {
+    for (int i = 0; i < _wordFromAPI.length; i++) {
+      var _imagePathWord = _wordFromAPI[i];
+      if (_wordFromAPI[i] == c) {
         _guessedCharacters.add(c);
         _wrongGuess = false;
         resultList[i] = c;
@@ -1591,8 +1587,8 @@ class _SecondPageState extends State<SecondPage> {
 
 //        _hangmanImage();
       } else {
-        if (_wrongGuessCharacters.contains(_tempWord)) {
-          _wrongGuessCharacters.remove(_tempWord);
+        if (_wrongGuessCharacters.contains(_imagePathWord)) {
+          _wrongGuessCharacters.remove(_imagePathWord);
         } else {
           _wrongGuessCharacters.add(c);
         }
@@ -1603,33 +1599,33 @@ class _SecondPageState extends State<SecondPage> {
 //      if (resultList[i] == _wrongGuessCharacters.elementAt(i)) {
 //        _wrongGuessCharacters.remove(c);
 //      }
-      if (_wrongGuessCharacters.contains(_tempWord)) {
-        _wrongGuessCharacters.remove(_tempWord);
+      if (_wrongGuessCharacters.contains(_imagePathWord)) {
+        _wrongGuessCharacters.remove(_imagePathWord);
       } else {}
       //_disp();
       _hangmanImage();
     }
 
-    // _temp = _guessedCharacters.elementAt(0);
+    // _imagePath = _guessedCharacters.elementAt(0);
   }
 
   void _hangmanImage() {
     var _resultString = resultList.join("");
 
-    if (_resultString == _word) {
-      this._temp = 'images/hangman/win.jpg';
+    if (_resultString == _wordFromAPI) {
+      this._imagePath = 'images/hangman/win.jpg';
       _winTheGame();
       //_winTheGame();
     } else if (_wrongGuessCharacters.length == 2) {
-      this._temp = 'images/hangman/7.png';
+      this._imagePath = 'images/hangman/7.png';
     } else if (_wrongGuessCharacters.length == 3) {
-      this._temp = 'images/hangman/8.png';
+      this._imagePath = 'images/hangman/8.png';
     } else if (_wrongGuessCharacters.length == 4) {
-      this._temp = 'images/hangman/9.png';
+      this._imagePath = 'images/hangman/9.png';
     } else if (_wrongGuessCharacters.length == 5) {
-      this._temp = 'images/hangman/10.png';
+      this._imagePath = 'images/hangman/10.png';
     } else if (_wrongGuessCharacters.length == 6) {
-      this._temp = 'images/hangman/11.png';
+      this._imagePath = 'images/hangman/11.png';
       _lossTheGame();
     }
   }
@@ -1686,7 +1682,7 @@ class _SecondPageState extends State<SecondPage> {
       style: alertStyle,
       // type: AlertType.error,
       title: "OOPS YOU FAILED",
-      desc: "word is " + _word,
+      desc: "word is " + _wordFromAPI,
       image: Image.asset("images/loss.jpeg"),
       buttons: [
         DialogButton(
@@ -1718,7 +1714,7 @@ class _SecondPageState extends State<SecondPage> {
     ).show();
   }
 
-  _wordCount() async {
+  _wordFromAPICount() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       _userInput = myController.text;
@@ -1887,8 +1883,8 @@ class Page1 extends StatelessWidget {
 
 class Page2 extends StatelessWidget {
   TextEditingController _textFieldController = TextEditingController();
-  String _word;
-  String _temp = '/hangman/1.png';
+  String _wordFromAPI;
+  String _imagePath = '/hangman/1.png';
 
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -1990,8 +1986,8 @@ class Page2 extends StatelessWidget {
                           decoration: InputDecoration(
 //Add th Hint text here.
 
-                            hintText:
-                                "Enter your name" + (_word = data[1]['name']),
+                            hintText: "Enter your name" +
+                                (_wordFromAPI = data[1]['name']),
                             hintStyle: TextStyle(
                                 fontSize: 20.0,
                                 color: Colors.white60,
@@ -2008,7 +2004,7 @@ class Page2 extends StatelessWidget {
                         color: Colors.blue,
 
                         child: new Text(
-                          "Finish " + _word,
+                          "Finish " + _wordFromAPI,
                           style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
@@ -2032,7 +2028,7 @@ class Page2 extends StatelessWidget {
                 color: Color.fromRGBO(234, 182, 111, 0),
                 margin: EdgeInsets.all(8.0),
                 child: Image.asset(
-                  _temp,
+                  _imagePath,
                   width: 295,
                   height: 280,
                 ),
@@ -2045,12 +2041,12 @@ class Page2 extends StatelessWidget {
   }
 
   void _hangmanImage() {
-    var _resultString = _word;
+    var _resultString = _wordFromAPI;
 
-    if (_resultString == _word) {
-      this._temp = 'images/hangman/11.png';
+    if (_resultString == _wordFromAPI) {
+      this._imagePath = 'images/hangman/11.png';
     } else {
-      this._temp = 'images/hangman/10.png';
+      this._imagePath = 'images/hangman/10.png';
     }
   }
 }
@@ -2131,8 +2127,8 @@ class Test extends StatefulWidget {
 class TestState extends State<Test> {
   final String url = "https://www.randomlists.com/data/vocabulary-words.json";
 
-  String _temp = 'images/hangman/9.png';
-  String _word = 'ssdjdsjdjs';
+  String _imagePath = 'images/hangman/9.png';
+  String _wordFromAPI = 'ssdjdsjdjs';
   @override
   void initState() {
     super.initState();
@@ -2164,7 +2160,7 @@ class TestState extends State<Test> {
                 color: Color.fromRGBO(90, 58, 29, 10),
                 margin: EdgeInsets.all(8.0),
                 child: Image.asset(
-                  _temp,
+                  _imagePath,
                   width: 295,
                   height: 280,
                 ),
@@ -2211,7 +2207,7 @@ class TestState extends State<Test> {
                         color: Colors.blue,
 
                         child: new Text(
-                          "Finish " + _word,
+                          "Finish " + _wordFromAPI,
                           style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
@@ -2235,7 +2231,7 @@ class TestState extends State<Test> {
                 color: Color.fromRGBO(234, 182, 111, 0),
                 margin: EdgeInsets.all(8.0),
                 child: Image.asset(
-                  _temp,
+                  _imagePath,
                   width: 295,
                   height: 280,
                 ),
@@ -2248,12 +2244,12 @@ class TestState extends State<Test> {
   }
 
   void _hangmanImage() {
-    var _resultString = _word;
+    var _resultString = _wordFromAPI;
 
-    if (_resultString != _word) {
-      this._temp = 'images/hangman/1.png';
+    if (_resultString != _wordFromAPI) {
+      this._imagePath = 'images/hangman/1.png';
     } else {
-      this._temp = 'images/hangman/10.png';
+      this._imagePath = 'images/hangman/10.png';
     }
   }
 }
