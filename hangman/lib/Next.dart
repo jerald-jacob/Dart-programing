@@ -806,6 +806,9 @@ class _SecondPageState extends State<SecondPage> {
   String _imagePath = 'images/hangman/1.png';
   final String url = "https://www.randomlists.com/data/vocabulary-words.json";
   String _wordFromAPI;
+  String _wordHint;
+  var _currentScore;
+  int _score = 0;
   var _wrongGuess = true;
   var completed = true;
   var _wrongGuessNumber = 0;
@@ -841,6 +844,7 @@ class _SecondPageState extends State<SecondPage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       _currentUser = (prefs.getString('name') ?? '');
+      _currentScore = (prefs.getInt('score') ?? '');
     });
   }
 
@@ -865,10 +869,11 @@ class _SecondPageState extends State<SecondPage> {
       if (response.statusCode == 200) {
         Random rnd;
         int min = 0;
-        int max = 100;
+        int max = data.length;
         rnd = new Random();
         var r = min + rnd.nextInt(max - min);
         this._wordFromAPI = data[r]['name'];
+        this._wordHint = data[r]['detail'];
 
         for (int i = 0; i < this._wordFromAPI.length; i++) {
           this.resultList.add(_filler);
@@ -896,7 +901,7 @@ class _SecondPageState extends State<SecondPage> {
           child: ListView(
             children: <Widget>[
               Container(
-                height: 50,
+                height: 80,
                 color: Color.fromRGBO(234, 182, 111, 0),
                 margin: EdgeInsets.all(8.0),
                 child: Image.asset(
@@ -922,10 +927,10 @@ class _SecondPageState extends State<SecondPage> {
                     ),
 
                     Text(
-                      "PLAYER " + _currentUser,
+                      "PLAYER " + _currentUser + "\n Hint : $_wordHint",
                       style: TextStyle(
                         fontSize: 20,
-                        fontFamily: 'Caesar_Dressing',
+                        fontFamily: 'Lato',
                         color: Colors.white,
                         fontWeight: FontWeight.w300,
                       ),
@@ -1631,6 +1636,8 @@ class _SecondPageState extends State<SecondPage> {
   }
 
   void _winTheGame() {
+    this._score += 10;
+    _scoreBord(_score);
     var alertStyle = AlertStyle(
       animationType: AnimationType.fromTop,
       isCloseButton: false,
@@ -1646,7 +1653,11 @@ class _SecondPageState extends State<SecondPage> {
       context: context,
       style: alertStyle,
       // type: AlertType.error,
-      title: "WELL DONE !",
+      title: "CONGRATULATIONS! \n"
+          "YOU WIN \n"
+          "Earned \n"
+          "Points\n"
+          "$_currentScore",
 
       image: Image.asset("images/sucess.jpeg"),
       buttons: [
@@ -1663,6 +1674,14 @@ class _SecondPageState extends State<SecondPage> {
         )
       ],
     ).show();
+  }
+
+  _scoreBord(_score) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _currentUser = myController.text;
+    });
+    prefs.setInt('score', _score);
   }
 
   void _lossTheGame() {

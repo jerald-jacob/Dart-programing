@@ -18,7 +18,7 @@ class _MyAppState extends State<MyApp1> {
   Widget build(BuildContext context) {
     return new SplashScreen(
       loaderColor: Colors.white,
-      seconds: 14,
+      seconds: 7,
       navigateAfterSeconds: new MainPage(),
       title: new Text(
         'Tell me wow ',
@@ -222,7 +222,7 @@ class _MainPageState extends State<MainPage> {
 
 Route _createRoute() {
   return PageRouteBuilder(
-    pageBuilder: (context, animation, secondaryAnimation) => SecondPage(),
+    pageBuilder: (context, animation, secondaryAnimation) => FirstPage(),
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       return child;
     },
