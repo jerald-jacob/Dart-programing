@@ -24,6 +24,7 @@ dependencies:
   url_launcher: ^3.0.0
   sqflite:  "^0.11.0+1"
   rflutter_alert: ^1.0.2
+  screenshot_and_share: ^0.0.1
 
   shared_preferences: ^0.4.2
   # The following adds the Cupertino Icons font to your application.

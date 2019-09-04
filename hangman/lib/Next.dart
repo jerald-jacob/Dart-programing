@@ -5,10 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:hangman/main.dart';
 import 'package:http/http.dart' as http;
 import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:screenshot_and_share/screenshot_share.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:video_player/video_player.dart';
 
 List data;
+
 String _userEmail = '';
 
 class Next extends StatefulWidget {
@@ -487,7 +489,7 @@ class _FirstPageState extends State<FirstPage> {
                           controller: myController,
                           cursorColor: Colors.white,
                           style: TextStyle(
-                            fontSize: 30,
+                            fontSize: 15,
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
                           ),
@@ -496,9 +498,9 @@ class _FirstPageState extends State<FirstPage> {
 
                             hintText: "Enter your name",
                             hintStyle: TextStyle(
-                                fontSize: 20.0,
-                                color: Colors.white,
-                                fontWeight: FontWeight.w300),
+                              fontSize: 15.0,
+                              color: Colors.white,
+                            ),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10.0),
                             ),
@@ -803,12 +805,12 @@ class _SecondPageState extends State<SecondPage> {
   String _userInput = '';
   Set _guessedCharacters = new Set();
   Set _wrongGuessCharacters = new Set();
-  String _imagePath = 'images/hangman/1.png';
+  String _imagePath = 'images/hangman/0.png';
   final String url = "https://www.randomlists.com/data/vocabulary-words.json";
   String _wordFromAPI;
   String _wordHint;
   var _currentScore;
-  int _score = 0;
+  static var _score = 10;
   var _wrongGuess = true;
   var completed = true;
   var _wrongGuessNumber = 0;
@@ -896,28 +898,23 @@ class _SecondPageState extends State<SecondPage> {
         primarySwatch: Colors.blue,
       ),
       home: Scaffold(
-        backgroundColor: Color.fromRGBO(234, 182, 111, 88),
+        backgroundColor: Color.fromRGBO(122, 147, 116, 88),
         body: SafeArea(
           child: ListView(
             children: <Widget>[
               Container(
-                height: 80,
-                color: Color.fromRGBO(234, 182, 111, 0),
-                margin: EdgeInsets.all(8.0),
-                child: Image.asset(
-                  'images/Hangman-Logo.png',
-                ),
-              ),
-              Container(
-                height: 100,
-                color: Color.fromRGBO(234, 182, 111, 0),
+                height: 300,
+                //color: Color.fromRGBO(122, 147, 116, 88),
                 margin: EdgeInsets.all(8.0),
                 child: Image.asset(
                   _imagePath,
+                  width: 380,
+                  height: 320,
                 ),
               ),
+
               Container(
-                height: 400,
+                height: 350,
                 color: Color.fromRGBO(34, 80, 41, 20),
                 margin: EdgeInsets.all(8.0),
                 child: Column(
@@ -925,16 +922,19 @@ class _SecondPageState extends State<SecondPage> {
                     SizedBox(
                       height: 20,
                     ),
+                    Container(
+                        child: Text(
+                            "PLAYER " +
+                                _currentUser +
+                                "\n Hint : $_wordFromAPI",
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontFamily: 'Lato',
+                              color: Colors.white,
+                              fontWeight: FontWeight.w300,
+                            ))),
 
-                    Text(
-                      "PLAYER " + _currentUser + "\n Hint : $_wordHint",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontFamily: 'Lato',
-                        color: Colors.white,
-                        fontWeight: FontWeight.w300,
-                      ),
-                    ),
+//                    ),
 //                      Image.asset('images/hangman/one.png'),
 //                      SizedBox(
 //                        width: 20,
@@ -1620,23 +1620,29 @@ class _SecondPageState extends State<SecondPage> {
     if (_resultString == _wordFromAPI) {
       this._imagePath = 'images/hangman/win.jpg';
       _winTheGame();
+
       //_winTheGame();
+    } else if (_wrongGuessCharacters.length == 1) {
+      this._imagePath = 'images/hangman/1.png';
     } else if (_wrongGuessCharacters.length == 2) {
-      this._imagePath = 'images/hangman/7.png';
+      this._imagePath = 'images/hangman/2.png';
     } else if (_wrongGuessCharacters.length == 3) {
-      this._imagePath = 'images/hangman/8.png';
+      this._imagePath = 'images/hangman/3.png';
     } else if (_wrongGuessCharacters.length == 4) {
-      this._imagePath = 'images/hangman/9.png';
+      this._imagePath = 'images/hangman/4.png';
     } else if (_wrongGuessCharacters.length == 5) {
-      this._imagePath = 'images/hangman/10.png';
+      this._imagePath = 'images/hangman/5.png';
     } else if (_wrongGuessCharacters.length == 6) {
-      this._imagePath = 'images/hangman/11.png';
+      this._imagePath = 'images/hangman/6.png';
+    } else if (_wrongGuessCharacters.length == 7) {
+      this._imagePath = 'images/hangman/7.png';
+    } else if (_wrongGuessCharacters.length >= 8) {
       _lossTheGame();
     }
   }
 
   void _winTheGame() {
-    this._score += 10;
+    _score += 10;
     _scoreBord(_score);
     var alertStyle = AlertStyle(
       animationType: AnimationType.fromTop,
@@ -1674,6 +1680,7 @@ class _SecondPageState extends State<SecondPage> {
         )
       ],
     ).show();
+    _screen();
   }
 
   _scoreBord(_score) async {
@@ -1739,6 +1746,10 @@ class _SecondPageState extends State<SecondPage> {
       _userInput = myController.text;
     });
     prefs.setString('userInput', _userInput);
+  }
+
+  void _screen() {
+    ScreenshotShare.takeScreenshotAndShare();
   }
 
 //  void _winTheGame()
