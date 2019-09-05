@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hangman/Next.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:splashscreen/splashscreen.dart';
 
 main() {
@@ -76,7 +77,7 @@ class _MainPageState extends State<MainPage> {
               ),
 
               Container(
-                  height: 480,
+                  height: 520,
                   // color: Colors.white,
                   color: Color.fromRGBO(34, 80, 41, 20),
                   margin: EdgeInsets.all(8.0),
@@ -151,7 +152,9 @@ class _MainPageState extends State<MainPage> {
                         height: 30,
                       ),
                       RaisedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          _gameOptions();
+                        },
                         textColor: Colors.white,
                         padding: const EdgeInsets.all(3.0),
                         child: Container(
@@ -182,7 +185,7 @@ class _MainPageState extends State<MainPage> {
                       ),
                       RaisedButton(
                         onPressed: () {
-                          Navigator.of(context).push(_createRoute());
+                          _aboutGame();
                         },
                         textColor: Colors.white,
                         padding: const EdgeInsets.all(3.0),
@@ -199,7 +202,7 @@ class _MainPageState extends State<MainPage> {
                           //   ),
                           padding: const EdgeInsets.all(10.0),
                           child: const Text(
-                            'MORE GAMES',
+                            'ABOUT GAME',
                             style: TextStyle(
                               fontSize: 25,
                               fontFamily: 'Caesar_Dressing',
@@ -217,6 +220,91 @@ class _MainPageState extends State<MainPage> {
         ),
       ),
     );
+  }
+
+  void _aboutGame() {
+    var alertStyle = AlertStyle(
+      animationType: AnimationType.fromTop,
+      isCloseButton: false,
+      isOverlayTapDismiss: false,
+      descStyle: TextStyle(fontWeight: FontWeight.bold),
+      animationDuration: Duration(milliseconds: 400),
+      titleStyle: TextStyle(
+        color: Colors.red,
+      ),
+    );
+
+    Alert(
+      context: context,
+      style: alertStyle,
+      // type: AlertType.error,
+      title: "Hangman",
+      desc:
+          """⚡ Hangman Game is based on the popular word guessing game Hangman. 
+          The player guesses letters in order to uncover the hidden word. But be careful,
+           you only have a few guesses before you're hanged!""",
+      image: Image.asset("images/icon.jpeg"),
+      buttons: [
+        DialogButton(
+          child: Text(
+            "OK",
+            style: TextStyle(color: Colors.white, fontSize: 20),
+          ),
+          onPressed: () {
+            Navigator.push(context,
+                new MaterialPageRoute(builder: (context) => new MainPage()));
+          },
+          color: Color.fromRGBO(0, 179, 134, 1.0),
+        )
+      ],
+    ).show();
+  }
+
+  void _gameOptions() {
+    var alertStyle = AlertStyle(
+      animationType: AnimationType.fromTop,
+      isCloseButton: false,
+      isOverlayTapDismiss: false,
+      descStyle: TextStyle(fontWeight: FontWeight.bold),
+      animationDuration: Duration(milliseconds: 400),
+      titleStyle: TextStyle(
+        color: Colors.red,
+      ),
+    );
+
+    Alert(
+      context: context,
+      style: alertStyle,
+      // type: AlertType.error,
+      title: "Difficulty",
+
+      image: Image.asset("images/icon.jpeg"),
+
+      buttons: [
+        DialogButton(
+          child: Text(
+            "EASY",
+            style: TextStyle(color: Colors.white, fontSize: 20),
+          ),
+          onPressed: () {
+            Navigator.push(context,
+                new MaterialPageRoute(builder: (context) => new FirstPage()));
+          },
+          color: Color.fromRGBO(0, 179, 134, 1.0),
+        ),
+        DialogButton(
+          child: Text(
+            "HARD",
+            style: TextStyle(color: Colors.white, fontSize: 20),
+          ),
+          onPressed: () {
+            Navigator.push(context,
+                new MaterialPageRoute(builder: (context) => new FirstPage()));
+          },
+          color: Color.fromRGBO(0, 179, 134, 1.0),
+        ),
+      ],
+    ).show();
   }
 }
 

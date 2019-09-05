@@ -344,7 +344,7 @@ class FirstPage extends StatefulWidget {
 }
 
 class _FirstPageState extends State<FirstPage> {
-  String _currentUser = '';
+  String _currentUser;
   VideoPlayerController _controller;
 
   final myController = TextEditingController();
@@ -457,7 +457,7 @@ class _FirstPageState extends State<FirstPage> {
               ),
 
               Container(
-                  height: 530,
+                  height: 575,
                   color: Color.fromRGBO(34, 80, 41, 20),
                   margin: EdgeInsets.all(8.0),
                   child: Column(
@@ -520,78 +520,7 @@ class _FirstPageState extends State<FirstPage> {
                           fontWeight: FontWeight.w300,
                         ),
                       ),
-                      Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Expanded(
-                              child: new MaterialButton(
-                                  padding: const EdgeInsets.all(3.0),
-                                  // textColor: Colors.re,
-                                  color: Color.fromRGBO(34, 80, 41, 89),
-                                  child: new Text(
-                                    "EASY",
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      fontFamily: 'Caesar_Dressing',
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w300,
-                                    ),
-                                  ),
-                                  onPressed: () {
-                                    _incrementCounter();
-                                    Navigator.push(
-                                        context,
-                                        new MaterialPageRoute(
-                                            builder: (context) => new Page2()));
-                                  }),
-                            ),
-                            Expanded(
-                              child: new MaterialButton(
-                                  padding: const EdgeInsets.all(3.0),
-                                  // textColor: Colors.re,
-                                  color: Color.fromRGBO(34, 80, 41, 89),
-                                  child: new Text(
-                                    "STANDARD",
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      fontFamily: 'Caesar_Dressing',
-                                      color: Colors.yellow,
-                                      fontWeight: FontWeight.w300,
-                                    ),
-                                  ),
-                                  onPressed: () {
-                                    _incrementCounter();
-                                    Navigator.push(
-                                        context,
-                                        new MaterialPageRoute(
-                                            builder: (context) =>
-                                                new SecondPage()));
-                                  }),
-                            ),
-                            Expanded(
-                              child: new MaterialButton(
-                                padding: const EdgeInsets.all(3.0),
-                                // textColor: Colors.re,
-                                color: Color.fromRGBO(34, 80, 41, 89),
-                                child: new Text(
-                                  "HARD",
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    fontFamily: 'Caesar_Dressing',
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w300,
-                                  ),
-                                ),
-//                                  onPressed: () {
-//                                    _incrementCounter();
-//                                    Navigator.push(
-//                                        context,
-//                                        new MaterialPageRoute(
-//                                            builder: (context) => new Page2()));
-//                                  }
-                              ),
-                            )
-                          ]),
+
                       Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
@@ -610,11 +539,11 @@ class _FirstPageState extends State<FirstPage> {
                                     ),
                                   ),
                                   onPressed: () {
-                                    _incrementCounter();
-                                    Navigator.push(
-                                        context,
-                                        new MaterialPageRoute(
-                                            builder: (context) => new Page2()));
+//                                    _incrementCounter();
+//                                    Navigator.push(
+//                                        context,
+//                                        new MaterialPageRoute(
+//                                            builder: (context) => new Page2()));
                                   }),
                             ),
                             Expanded(
@@ -632,11 +561,11 @@ class _FirstPageState extends State<FirstPage> {
                                     ),
                                   ),
                                   onPressed: () {
-                                    _incrementCounter();
-                                    Navigator.push(
-                                        context,
-                                        new MaterialPageRoute(
-                                            builder: (context) => new Page2()));
+//                                    _incrementCounter();
+//                                    Navigator.push(
+//                                        context,
+//                                        new MaterialPageRoute(
+//                                            builder: (context) => new Page2()));
                                   }),
                             ),
                             Expanded(
@@ -654,11 +583,11 @@ class _FirstPageState extends State<FirstPage> {
                                     ),
                                   ),
                                   onPressed: () {
-                                    _incrementCounter();
-                                    Navigator.push(
-                                        context,
-                                        new MaterialPageRoute(
-                                            builder: (context) => new Page2()));
+//                                    _incrementCounter();
+//                                    Navigator.push(
+//                                        context,
+//                                        new MaterialPageRoute(
+//                                            builder: (context) => new Page2()));
                                   }),
                             )
                           ]),
@@ -680,11 +609,11 @@ class _FirstPageState extends State<FirstPage> {
                                     ),
                                   ),
                                   onPressed: () {
-                                    _incrementCounter();
-                                    Navigator.push(
-                                        context,
-                                        new MaterialPageRoute(
-                                            builder: (context) => new Page2()));
+//                                    _incrementCounter();
+//                                    Navigator.push(
+//                                        context,
+//                                        new MaterialPageRoute(
+//                                            builder: (context) => new Page2()));
                                   }),
                             ),
                             Expanded(
@@ -702,11 +631,11 @@ class _FirstPageState extends State<FirstPage> {
                                     ),
                                   ),
                                   onPressed: () {
-                                    _incrementCounter();
-                                    Navigator.push(
-                                        context,
-                                        new MaterialPageRoute(
-                                            builder: (context) => new Page2()));
+//                                    _incrementCounter();
+//                                    Navigator.push(
+//                                        context,
+//                                        new MaterialPageRoute(
+//                                            builder: (context) => new Page2()));
                                   }),
                             ),
                             Expanded(
@@ -725,11 +654,11 @@ class _FirstPageState extends State<FirstPage> {
                                     ),
                                   ),
                                   onPressed: () {
-                                    _incrementCounter();
-                                    Navigator.push(
-                                        context,
-                                        new MaterialPageRoute(
-                                            builder: (context) => new Page2()));
+//                                    _incrementCounter();
+//                                    Navigator.push(
+//                                        context,
+//                                        new MaterialPageRoute(
+//                                            builder: (context) => new Page2()));
                                   }),
                             )
                           ]),
@@ -813,7 +742,6 @@ class _SecondPageState extends State<SecondPage> {
   static var _score = 10;
   var _wrongGuess = true;
   var completed = true;
-  var _wrongGuessNumber = 0;
 
   var resultList = new List<String>();
 
@@ -826,7 +754,7 @@ class _SecondPageState extends State<SecondPage> {
   @override
   void initState() {
     super.initState();
-
+    _incrementCounter();
     _loadCounter();
     //_loadBlank();
     this.getJsonData();
@@ -839,13 +767,14 @@ class _SecondPageState extends State<SecondPage> {
         setState(() {});
       });
     _controller.play();
-    _controller.setLooping(true);
+
+    //_controller.setLooping(true);
   }
 
   _loadCounter() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      _currentUser = (prefs.getString('name') ?? '');
+      this._currentUser = (prefs.getString('name') ?? '');
       _currentScore = (prefs.getInt('score') ?? '');
     });
   }
@@ -853,9 +782,9 @@ class _SecondPageState extends State<SecondPage> {
   _incrementCounter() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      _currentUser = myController.text;
+      // _currentUser = myController.text;
     });
-    prefs.setString('name', _currentUser);
+    // prefs.setString('name', _currentUser);
   }
 
   Future<String> getJsonData() async {
@@ -914,7 +843,7 @@ class _SecondPageState extends State<SecondPage> {
               ),
 
               Container(
-                height: 350,
+                height: 400,
                 color: Color.fromRGBO(34, 80, 41, 20),
                 margin: EdgeInsets.all(8.0),
                 child: Column(
@@ -1659,7 +1588,7 @@ class _SecondPageState extends State<SecondPage> {
       context: context,
       style: alertStyle,
       // type: AlertType.error,
-      title: "CONGRATULATIONS! \n"
+      title: "CONGRATULATIONS! $_currentUser \n"
           "YOU WIN \n"
           "Earned \n"
           "Points\n"
@@ -1729,7 +1658,7 @@ class _SecondPageState extends State<SecondPage> {
           ),
           onPressed: () {
             Navigator.push(context,
-                new MaterialPageRoute(builder: (context) => new SecondPage()));
+                new MaterialPageRoute(builder: (context) => new MainPage()));
           },
           gradient: LinearGradient(colors: [
             Color.fromRGBO(116, 116, 191, 1.0),
