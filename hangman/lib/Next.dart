@@ -98,16 +98,7 @@ class User extends StatelessWidget {
 //        ),
           child: ListView(
             children: <Widget>[
-              // Max Size
-//              Container(
-//                  height: 100,
-//                  color: Color.fromRGBO(90, 58, 29, 10),
-//                  margin: EdgeInsets.all(8.0),
-//                  child: Image.asset(
-//                    'images/maingif.gif',
-//                    width: 300,
-//                    height: 280,
-//                  )),
+
               Container(
                 height: 100,
                 color: Color.fromRGBO(90, 58, 29, 10),
