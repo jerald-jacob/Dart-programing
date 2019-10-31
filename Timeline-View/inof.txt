@@ -1,1 +1,5 @@
 The timeline view also supports importing and exporting of timeline data files. For more information, see the Import and export section.
+
+Frame rendering chart
+
+This chart is populated with individual frames as they are rendered in your application. Each bar in the chart represents a frame. The bars are color-coded to highlight the different portions of work that occur when rendering a Flutter frame: work from the UI thread and work from the GPU thread.
