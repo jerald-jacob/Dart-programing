@@ -3,3 +3,6 @@ The timeline view also supports importing and exporting of timeline data files. 
 Frame rendering chart
 
 This chart is populated with individual frames as they are rendered in your application. Each bar in the chart represents a frame. The bars are color-coded to highlight the different portions of work that occur when rendering a Flutter frame: work from the UI thread and work from the GPU thread.
+UI
+
+The UI thread executes Dart code in the Dart VM. This includes code from your application as well as the Flutter framework. When your app creates and displays a scene, the UI thread creates a layer tree, a lightweight object containing device-agnostic painting commands, and sends the layer tree to the GPU thread to be rendered on the device. Do not block this thread
