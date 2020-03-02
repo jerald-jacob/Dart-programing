@@ -1,4 +1,4 @@
-name: multi_part_image
+name: get_postal_code
 description: A new Flutter application.
 
 # The following defines the version and build number for your application.
@@ -19,7 +19,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
+  http:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
@@ -27,7 +27,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  share: ^0.6.2+3
+
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
