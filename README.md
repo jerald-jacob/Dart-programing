@@ -13,7 +13,4 @@
 <h4><a href="https://github.com/jerald-jacob/Dart-programing/tree/master/hangman">Hangman</a></h4>
 <p>A flutter game using word API</p>
 
-<h4><a href="https://github.com/jerald-jacob/Dart-programing/tree/master/hangman">Hangman</a></h4>
-<p>A flutter game using word API</p>
-
 
